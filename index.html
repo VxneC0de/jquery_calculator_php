@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Calculator</title>
+</head>
+<body>
+
+  <form method="post" action="index.php">
+
+    Valor 1 <input id="d1" type="number" name="d1">
+    <br>
+    Valor 2 <input id="d2" type="number" name="d2">
+
+    <button id="b1" type="submit">Calculate</button>
+
+  </form>
+
+  <div id="resultados">Calculo</div>
+
+  <script src="jquery.js"></script>
+
+  <script>
+  
+  let x = $(document);
+  x.ready(inicializarEventos);
+  
+  function inicializarEventos(){
+    let x = $("#b1");
+    x.click(fuera);
+  }
+  
+  function fuera(){
+    event.preventDefault(); // Evita que el formulario se envíe de forma tradicional
+    let x = $("#d1").val();
+    let y = $("#d2").val();
+    let sumaTotal = parseFloat(x) + parseFloat(y); // Sumar los valores
+
+    $.ajax({
+      async: true,
+      type: "POST",
+      dataType: "html",
+      url: "index.php",
+      data: { d1: x, d2: y, sumaTotal: sumaTotal },
+      beforeSend: llego,
+      success: llegada,
+      timeout: 5000,
+      error: problemas
+    }); //ajax es una clase para un objeto con sus parametros
+
+    return false;
+  }
+
+  function llego(){
+    let x = $("#resultados");
+    x.html('<img src="https://i.gifer.com/ZKZg.gif" alt="load" width="100" height="100">');
+  }
+
+  function llegada(datos){
+    $("#resultados").text(datos);
+  }
+
+  function problemas(){
+    $("#resultados").text("intente mas tarde");
+  }
+
+  </script>
+  
+</body>
+</html>
